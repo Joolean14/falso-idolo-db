@@ -80,33 +80,73 @@ UPDATE user SET fip_total=3 WHERE user_id=1;
 
 ALTER TABLE product ADD fip_value INT(10) AFTER user_id;
 
-SELECT product.product_name FROM wish JOIN user ON user.user_id=wish.user_id JOIN product ON wish.sku=product.sku WHERE fip_total>fip_value;
+ALTER TABLE sales ADD user_id INT(20) AFTER product_id;
+ALTER TABLE sales ADD CONSTRAINT `fk_user_sales` FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE RESTRICT ON UPDATE CASCADE
+
+SELECT product.product_name 
+FROM wish JOIN user ON user.user_id=wish.user_id JOIN product ON wish.sku=product.sku 
+WHERE fip_total>fip_value;
 
 
--- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --Queries --1. Mostrar los productos mas vendidos y menos vendidos. SELECT SUM(cantidad),
-nombre_producto FROM ventas JOIN producto ON sku GROUP BY sku --2. Wish list. SELECT wish,
+
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+--Queries 
+1. Mostrar los productos mas vendidos y menos vendidos. SELECT SUM(cantidad),
+nombre_producto FROM ventas JOIN producto ON sku GROUP BY sku
+
+ --2. Wish list. SELECT wish,
 nombre_producto FROM producto;
 
---3. Mostrar cuantos puntos ha acumulado un usuario. SELECT total_fip WHERE email='j@j.com';
+--3. Mostrar cuantos puntos ha acumulado un usuario. 
+SELECT total_fip WHERE email='j@j.com';
+
+--4. Mostrar usuarios con mayor cantidad de compras en un periodo de tiempo.
+
+SELECT SUM(product.product_price), product.product_name
+FROM sales JOIN product ON sales.product_id = product.product_price JOIN user ON user.user_id = sales.user_id
+WHERE sales.date BETWEEN '2006-01-01 00:00:00' AND '2006-02-01 00:00:00'
+GROUP BY product.product_id;
+--WHERE sales.date >= '2006-01-01 00:00:00' AND sales.date <= '2006-02-01 00:00:00';
 
 
 
---5. Mostrar perfil de usuario. --7. Busqueda por nombre,
-precio,
-categoria,
-descuentos. SELECT nombre_producto FROM producto;
+
+
+--5. Mostrar perfil de usuario.
+SELECT * FROM usuario;
+
+ --7. Busqueda por nombre,precio, categoria,descuentos.
+  SELECT nombre_producto FROM producto;
 
 SELECT precio_producto FROM producto;
 
 SELECT nombre_producto FROM descripcion;
 
 SELECT descuento FROM producto;
-SELECT * FROM usuario;
 
---8. Dias y horarios con mas ventas. --11. Mostrar el inventario en fecha seleccionada. SELECT stock FROM producto;
+--8. Mostrar dias y horarios con mas ventas.
 
---12. Mostrar el iva del total de ventas. SELECT SUM(valor * 0.19) FROM transaccion;
+-- SELECT columna u operaciones
+--FROM tablas JOIN que tablas vamos a unir ON condicion que las une
+--WHERE condicion
+--GROUP BY agrupamiento que es cuando hay operaciones arriba
+--ORDER BY
 
---13. Mostrar ventas respecto al punto de equilibrio de la empresa. SELECT SUM(valor - 1000) FROM transaccion;
+SELECT MAX(product.product_price), sales.date
+FROM sales JOIN product ON sales.product_id = product.product_id
+GROUP BY sales.date;
+
+--WHERE MAX(sales.date) > MAX(sales.date)
+
+
+ --11. Mostrar el inventario en fecha seleccionada.
+  SELECT stock FROM producto;
+
+--12. Mostrar el iva del total de ventas. 
+SELECT SUM(valor * 0.19) FROM transaccion;
+
+--13. Mostrar ventas respecto al punto de equilibrio de la empresa. 
+SELECT SUM(valor - 1000) FROM transaccion;
 
 --19. Mostrar posibles compras con fidelizacion. --Tables: user con producto.Columns: user.total_fip producto.valor_fip --en medio wish_usuario_producto.id_usuario wish_usuario_producto.id_usuario usuario.id_usuario --20. Enviar correo despues de 3 meses de su ultima compra. --Transaccion-->Usuario --fecha_transaccion-->id_usuario
