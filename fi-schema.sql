@@ -92,16 +92,19 @@ WHERE fip_total>fip_value;
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 --Queries 
-1. Mostrar los productos mas vendidos y menos vendidos. SELECT SUM(cantidad),
-nombre_producto FROM ventas JOIN producto ON sku GROUP BY sku
+--1. Mostrar los productos mas vendidos y menos vendidos. 
+SELECT SUM(product.quantity_stock) AS quantity, product_name AS product 
+FROM sales JOIN product ON sku GROUP BY sku ORDER BY quantity;
 
- --2. Wish list. SELECT wish,
-nombre_producto FROM producto;
+
+
+ --2. Wish list. 
+ SELECT wish, nombre_producto FROM producto;
 
 --3. Mostrar cuantos puntos ha acumulado un usuario. 
 SELECT total_fip WHERE email='j@j.com';
 
---4. Mostrar usuarios con mayor cantidad de compras en un periodo de tiempo.
+--4. Mostrar productos con mayor cantidad de compras en un periodo de tiempo determinado. (hacer el requirimiento 4)
 
 SELECT SUM(product.product_price), product.product_name
 FROM sales JOIN product ON sales.product_id = product.product_price JOIN user ON user.user_id = sales.user_id
@@ -117,13 +120,13 @@ GROUP BY product.product_id;
 SELECT * FROM usuario;
 
  --7. Busqueda por nombre,precio, categoria,descuentos.
-  SELECT nombre_producto FROM producto;
+  SELECT nombre_producto FROM producto WHERE nombre_producto = busqueda(gutarra);
 
-SELECT precio_producto FROM producto;
+SELECT precio_producto FROM producto; --corregir
 
-SELECT nombre_producto FROM descripcion;
+SELECT nombre_producto FROM descripcion; --corregir
 
-SELECT descuento FROM producto;
+SELECT descuento FROM producto; --corregir
 
 --8. Mostrar dias y horarios con mas ventas.
 
@@ -141,7 +144,7 @@ GROUP BY sales.date;
 
 
  --11. Mostrar el inventario en fecha seleccionada.
-  SELECT stock FROM producto;
+  SELECT stock FROM producto; --corregir poner where
 
 --12. Mostrar el iva del total de ventas. 
 SELECT SUM(valor * 0.19) FROM transaccion;
