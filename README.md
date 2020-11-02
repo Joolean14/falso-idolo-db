@@ -8,7 +8,7 @@
 6. Mostrar productos proximos a salir.
 7. Busqueda por nombre, precio, categoria, descuentos.
 8. Dias y horarios con mas ventas.
-9. Gift Cards. (especificar)
+9. Gift Cards. (especificar) 
 10. Historial de busquedas del usuario.
 11. Mostrar el inventario en fecha seleccionada.
 12. Mostrar el iva del total de ventas. (impuestos). 
@@ -21,8 +21,6 @@
 19. Mostrar posibles compras con fidelizacion.
 20. Enviar correo despues de 3 meses de su ultima compra. (Seguimiento de clientes)
 
-# Vistas
 
-Bodega
 
 

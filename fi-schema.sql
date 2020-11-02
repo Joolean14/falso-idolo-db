@@ -1,13 +1,16 @@
-CREATE TABLE user(user_id INT(20) NOT NULL AUTO_INCREMENT,
+CREATE TABLE user (
+    user_id INT(20) NOT NULL AUTO_INCREMENT,
     password VARCHAR(20) NOT NULL,
     first_name VARCHAR(20) NOT NULL,
     last_name VARCHAR(20) NOT NULL,
     email VARCHAR(30) NOT NULL,
     fip_total INT(10),
-    PRIMARY KEY(user_id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    PRIMARY KEY(user_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
-CREATE TABLE product(product_id INT(20) NOT NULL AUTO_INCREMENT,
+CREATE TABLE product (
+    product_id INT(20) NOT NULL AUTO_INCREMENT,
     product_name VARCHAR(15),
     product_price FLOAT(15),
     sku INT(20),
@@ -19,29 +22,35 @@ CREATE TABLE product(product_id INT(20) NOT NULL AUTO_INCREMENT,
     user_id INT(20) NOT NULL,
     PRIMARY KEY(product_id),
     KEY product_sku(sku),
-    CONSTRAINT `fk_user_product` FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE RESTRICT ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    CONSTRAINT `fk_user_product` FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE RESTRICT ON UPDATE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
-CREATE TABLE payment_method(payment_id INT(20) NOT NULL AUTO_INCREMENT,
+CREATE TABLE payment_method (
+    payment_id INT(20) NOT NULL AUTO_INCREMENT,
     credit_card VARCHAR(20),
     debit VARCHAR(20),
     cash INT(20),
     user_id INT(20) NOT NULL,
     fip_value INT(10),
     PRIMARY KEY(payment_id),
-    CONSTRAINT `fk_payment_method-user` FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE RESTRICT ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    CONSTRAINT `fk_payment_method-user` FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE RESTRICT ON UPDATE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
-CREATE TABLE wish(user_id INT(20) NOT NULL AUTO_INCREMENT,
+CREATE TABLE wish(
+    user_id INT(20) NOT NULL AUTO_INCREMENT,
     sku INT(20),
     search_date DATETIME,
     PRIMARY KEY(sku, user_id),
     CONSTRAINT `fk_user_wish` FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT `fk_product_wish` FOREIGN KEY(sku) REFERENCES product(sku) ON DELETE RESTRICT ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    CONSTRAINT `fk_product_wish` FOREIGN KEY(sku) REFERENCES product(sku) ON DELETE RESTRICT ON UPDATE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
-CREATE TABLE cart(cart_id INT(20) AUTO_INCREMENT,
+CREATE TABLE cart(
+    cart_id INT(20) AUTO_INCREMENT,
     total_value INT(20),
     date DATETIME,
     user_id INT(20),
@@ -58,17 +67,34 @@ CREATE TABLE sales(stock INT(20),
     date DATETIME NOT NULL,
     product_id INT(20),
     PRIMARY KEY (stock),
-    CONSTRAINT `fk_product_sales` FOREIGN KEY(product_id) REFERENCES product(product_id) ON DELETE RESTRICT ON UPDATE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    CONSTRAINT `fk_product_sales` FOREIGN KEY(product_id) REFERENCES product(product_id) ON DELETE RESTRICT ON UPDATE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 
------------------------------------------------------------------------------------------- CREATE TABLE transaction() ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+------------------------------------------------------------------------------------------
+ CREATE TABLE transaction (
+     transaction_id INT(20) NOT NULL AUTO_INCREMENT,
+     value FLOAT(20) NOT NULL,
+     date DATETIME NOT NULL,
+     shipping_id INT(20) NOT NULL,
+     cart_id INT(20) NOT NULL,
+     PRIMARY KEY(transaction_id),
+     CONSTRAINT `fk_cart_transaction` FOREIGN KEY(cart_id) REFERENCES cart(cart_id) ON DELETE RESTRICT ON UPDATE CASCADE   
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    --  CONSTRAINT `fk_shipping_transaction` FOREIGN KEY(shipping_id) REFERENCES shipping(shipping_id) ON DELETE RESTRICT ON UPDATE CASCADE
 
-CREATE TABLE shipping(shipping_id INT(20) NOT NULL AUTO_INCREMENT,
+CREATE TABLE shipping (
+    shipping_id INT(20) NOT NULL AUTO_INCREMENT,
     address VARCHAR(30) NOT NULL,
     city VARCHAR(30) NOT NULL,
-    receive_date DATETIME NOT NULL,
-    shipping_date DATETIME NOT NULL PRIMARY KEY(shipping_id) KEY payment(payment_id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    country VARCHAR(30) NOT NULL,
+    delivery_date DATETIME NOT NULL,
+    shipping_date DATETIME NOT NULL,
+    transaction_id INT(20) NOT NULL,
+    PRIMARY KEY(shipping_id),
+    CONSTRAINT `fk_transaction_shipping` FOREIGN KEY(transaction_id) REFERENCES transaction(transaction_id) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- - INSERT INTO product(product_name, product_price, sku, discount, product_description, quantity_stock, reviews, rating, user_id, fip_value) VALUES("teclado", "30.9", 123456789, 30, "Guitarra de arce", 20, 4, 1, 1, 2);
@@ -92,11 +118,11 @@ WHERE fip_total>fip_value;
 
 -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 --Queries 
+
+
 --1. Mostrar los productos mas vendidos y menos vendidos. 
 SELECT SUM(product.quantity_stock) AS quantity, product_name AS product 
 FROM sales JOIN product ON sku GROUP BY sku ORDER BY quantity;
-
-
 
  --2. Wish list. 
  SELECT wish, nombre_producto FROM producto;
@@ -111,9 +137,6 @@ FROM sales JOIN product ON sales.product_id = product.product_price JOIN user ON
 WHERE sales.date BETWEEN '2006-01-01 00:00:00' AND '2006-02-01 00:00:00'
 GROUP BY product.product_id;
 --WHERE sales.date >= '2006-01-01 00:00:00' AND sales.date <= '2006-02-01 00:00:00';
-
-
-
 
 
 --5. Mostrar perfil de usuario.
@@ -143,7 +166,7 @@ GROUP BY sales.date;
 --WHERE MAX(sales.date) > MAX(sales.date)
 
 
- --11. Mostrar el inventario en fecha seleccionada.
+--11. Mostrar el inventario en fecha seleccionada.
   SELECT stock FROM producto; --corregir poner where
 
 --12. Mostrar el iva del total de ventas. 
@@ -152,4 +175,6 @@ SELECT SUM(valor * 0.19) FROM transaccion;
 --13. Mostrar ventas respecto al punto de equilibrio de la empresa. 
 SELECT SUM(valor - 1000) FROM transaccion;
 
---19. Mostrar posibles compras con fidelizacion. --Tables: user con producto.Columns: user.total_fip producto.valor_fip --en medio wish_usuario_producto.id_usuario wish_usuario_producto.id_usuario usuario.id_usuario --20. Enviar correo despues de 3 meses de su ultima compra. --Transaccion-->Usuario --fecha_transaccion-->id_usuario
+--19. Mostrar posibles compras con fidelizacion. --Tables: user con producto.Columns: user.total_fip producto.valor_fip --en medio wish_usuario_producto.id_usuario wish_usuario_producto.id_usuario usuario.id_usuario
+
+ --20. Enviar correo despues de 3 meses de su ultima compra. --Transaccion-->Usuario --fecha_transaccion-->id_usuario
