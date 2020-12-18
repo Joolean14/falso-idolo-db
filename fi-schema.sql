@@ -25,6 +25,25 @@ CREATE TABLE product (
     CONSTRAINT `fk_user_product` FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE RESTRICT ON UPDATE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- SELECT product_name, product_price, discount FROM product;
+-- INSERT INTO product(product_name, product_price, sku, discount, product_description, quantity_stock, reviews, rating, user_id)
+--  VALUES("Camiseta", 20.9, 123456789, 10, "Camiseta temporada 1 YML", 50, "Muy bueno el tie dye", 5, 1);
+
+-- INSERT INTO product(product_name, product_price, sku, discount, product_description, quantity_stock, reviews, rating, user_id)
+--  VALUES("Camiseta", 20.9, 123456789, 10, "Camiseta temporada 2 YML", 50, "Muy bueno el tie diseno", 5, 1);
+
+
+-- INSERT INTO product(product_name, product_price, sku, discount, product_description, quantity_stock, reviews, rating, user_id)
+--  VALUES("Camiseta", 20.9, 12345678, 10, "Camiseta temporada 3 YML", 50, "Muy buena la talla", 5, 1);
+
+-- DELETE FROM product
+-- WHERE sku = 523456789;
+
+-- UPDATE product
+-- SET sku = 623456789
+-- WHERE product_description = "Camiseta temporada 1 YML"
+
+
 
 CREATE TABLE payment_method (
     payment_id INT(20) NOT NULL AUTO_INCREMENT,
@@ -37,6 +56,28 @@ CREATE TABLE payment_method (
     CONSTRAINT `fk_payment_method-user` FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE RESTRICT ON UPDATE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+    -- INSERT INTO payment_method(credit_card, debit, cash, user_id)
+    -- VALUES ('mastercard', 'Bancolombia', 0, 1);
+
+    -- INSERT INTO payment_method(credit_card, debit, cash, user_id)
+    -- VALUES ('visa', 'Banco de Bogota', 100, 3);
+
+    -- INSERT INTO payment_method(credit_card, debit, cash, user_id)
+    -- VALUES ('mastercard', 'Banco Pichincha', 200, 4);
+
+    -- INSERT INTO payment_method(credit_card, debit, cash, user_id)
+    -- VALUES ('visa', 'Bancolombia', 300, 4);
+
+    --     INSERT INTO payment_method(credit_card, debit, cash, user_id)
+    -- VALUES ('visa', 'Banco de Bogota', 100, 5);
+
+    --     INSERT INTO payment_method(credit_card, debit, cash, user_id)
+    -- VALUES ('visa', 'Bancolombia', 50, 6);
+
+
+
+
+
 
 CREATE TABLE wish(
     user_id INT(20) NOT NULL AUTO_INCREMENT,
@@ -46,6 +87,9 @@ CREATE TABLE wish(
     CONSTRAINT `fk_user_wish` FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT `fk_product_wish` FOREIGN KEY(sku) REFERENCES product(sku) ON DELETE RESTRICT ON UPDATE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+    INSERT INTO wish(user_id, sku, search_date)
+    VALUES (1, 223456789,'2020-01-01');
 
 
 
@@ -101,6 +145,7 @@ CREATE TABLE shipping (
 
 INSERT INTO wish(user_id, sku, search_date) VALUES("1", 123456789, '2006-02-15 04:34:33');
 
+
 UPDATE user SET fip_total=3 WHERE user_id=1;
 
 
@@ -113,6 +158,13 @@ SELECT product.product_name
 FROM wish JOIN user ON user.user_id=wish.user_id JOIN product ON wish.sku=product.sku 
 WHERE fip_total>fip_value;
 
+ALTER TABLE cart ADD CONSTRAINT `fk_product_cart`FOREIGN KEY(product_id) REFERENCES product(product_id) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+ALTER TABLE cart ADD CONSTRAINT `fk_transaction_cart`FOREIGN KEY(transaction_id) REFERENCES transaction(transaction_id) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+ALTER TABLE transaction ADD CONSTRAINT `fk_shipping_transaction`FOREIGN KEY(shipping_id) REFERENCES shipping(shipping_id) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+--DELETE FROM user WHERE fip_total = 200;
 
 
 

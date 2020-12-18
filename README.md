@@ -1,7 +1,17 @@
-# Requerimientos
+# Falso Ídolo DB
+
+## Ejercicio MySQL
+
+*Base de datos* para la tienda de merch de [Falso Ídolo] (www.falsoidolo.com)
+
+[ER Diagram] (https://lucid.app/invitations/accept/848182cd-1379-41a2-a6ea-5715bb26aa01
+)
+
+
+### Requerimientos
 
 1. Mostrar los productos mas vendidos y menos vendidos.
-2. Mpstrar el Wish list de cada usuario.
+2. Mostrar el Wish list de cada usuario.
 3. Mostrar cuantos puntos ha acumulado un usuario.
 4. Mostrar usuarios con mayor cantidad de compras a traves del tiempo.
 5. Mostrar perfil de usuario. (segmentacion)
